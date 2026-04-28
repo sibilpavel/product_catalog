@@ -55,6 +55,12 @@
                     Save
                 </button>
             </form>
+            <p
+                v-if="errors"
+                class="text-red-600 mb-4"
+            >
+                {{ errors[Object.keys(errors)[0]]?.[0] }}
+            </p>
         </div>
     </AppLayout>
 </template>
@@ -64,7 +70,8 @@ import { reactive, ref, onMounted } from 'vue'
 import { router, Head } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import api from '@/lib/api'
-
+import { useAuth } from '@/Composables/useAuth'
+const { isAuthenticated } = useAuth()
 const categories = ref([])
 
 const form = reactive({
@@ -74,18 +81,33 @@ const form = reactive({
     category_id: '',
 })
 
+const errors = ref({})
+
+
 const fetchCategories = async () => {
     const response = await api.get('/api/categories')
     categories.value = response.data.data
 }
 
 const submit = async () => {
-    await api.post('/api/products', form)
+    try{
+        await api.post('/api/products', form)
+        errors.value = {}
+        router.visit('/admin/products')
+    }catch (e){
+        if (e.response?.status === 422) {
+            errors.value = e.response.data.errors
+        }else{
+            errors.value = {"Error": ["Error"]}
+        }
+    }
 
-    router.visit('/admin/products')
 }
 
 onMounted(() => {
+    if (!isAuthenticated()) {
+        router.visit('/login')
+    }
     fetchCategories()
 })
 </script>

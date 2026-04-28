@@ -34,12 +34,18 @@
                     Login
                 </button>
             </form>
+            <p
+                v-if="error"
+                class="text-red-600 mb-4"
+            >
+                {{ error }}
+            </p>
         </div>
     </AppLayout>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import {reactive, ref} from 'vue'
 import { router, Head } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { useAuth } from '@/Composables/useAuth'
@@ -51,9 +57,18 @@ const form = reactive({
     password: '',
 })
 
-const submit = async () => {
-    await login(form.email, form.password)
+const error = ref('')
 
-    router.visit('/admin/products')
+const submit = async () => {
+    try {
+        error.value = ''
+
+        await login(form.email, form.password)
+
+        router.visit('/admin/products')
+    } catch (e) {
+        alert(12);
+        error.value = 'Invalid email or password'
+    }
 }
 </script>

@@ -4,7 +4,7 @@
 
         <div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
             <h1 class="text-2xl font-bold mb-6">
-                Create Product
+                Edit Product
             </h1>
 
             <form @submit.prevent="submit">
@@ -55,6 +55,12 @@
                     Save
                 </button>
             </form>
+            <p
+                v-if="errors"
+                class="text-red-600 mb-4"
+            >
+                {{ errors[Object.keys(errors)[0]]?.[0] }}
+            </p>
         </div>
     </AppLayout>
 </template>
@@ -64,7 +70,8 @@ import { reactive, ref, onMounted } from 'vue'
 import { router, Head } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import api from '@/lib/api'
-
+import { useAuth } from '@/Composables/useAuth'
+const { isAuthenticated } = useAuth()
 const categories = ref([])
 
 const form = reactive({
@@ -73,6 +80,8 @@ const form = reactive({
     price: '',
     category_id: '',
 })
+
+const errors = ref({})
 
 const fetchCategories = async () => {
     const response = await api.get('/api/categories')
@@ -97,15 +106,28 @@ const fetchProduct = async () => {
 }
 
 const submit = async () => {
-    await api.put(
-        `/api/products/${props.productId}`,
-        form
-    )
+    try {
+        await api.put(
+            `/api/products/${props.productId}`,
+            form
+        )
+        errors.value = {}
+        router.visit('/admin/products')
+    }catch (e){
+        if (e.response?.status === 422) {
+            errors.value = e.response.data.errors
+        }else{
+            errors.value = {"Error": ["Error"]}
+        }
+    }
 
-    router.visit('/admin/products')
 }
 
 onMounted(() => {
+    if (!isAuthenticated()) {
+        router.visit('/login')
+    }
+
     fetchCategories()
     fetchProduct()
 })

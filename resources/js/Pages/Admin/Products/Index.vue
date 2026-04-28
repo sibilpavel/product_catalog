@@ -87,6 +87,12 @@ import api from '@/lib/api'
 import { Head, Link } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 
+import { router } from '@inertiajs/vue3'
+import { useAuth } from '@/Composables/useAuth'
+
+const { isAuthenticated } = useAuth()
+
+
 const products = ref([])
 
 const currentPage = ref(1)
@@ -111,6 +117,9 @@ const remove = async (id) => {
 }
 
 onMounted(() => {
+    if (!isAuthenticated()) {
+        router.visit('/login')
+    }
     fetchProducts()
 })
 </script>
