@@ -71,6 +71,7 @@ import { router, Head } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import api from '@/lib/api'
 import { useAuth } from '@/Composables/useAuth'
+import {ProductApi} from "../../../api/products.js";
 const { isAuthenticated } = useAuth()
 const categories = ref([])
 
@@ -91,7 +92,7 @@ const fetchCategories = async () => {
 
 const submit = async () => {
     try{
-        await api.post('/api/products', form)
+        await ProductApi.create(form)
         errors.value = {}
         router.visit('/admin/products')
     }catch (e){

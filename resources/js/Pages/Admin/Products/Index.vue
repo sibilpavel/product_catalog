@@ -89,6 +89,7 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 
 import { router } from '@inertiajs/vue3'
 import { useAuth } from '@/Composables/useAuth'
+import {ProductApi} from "../../../api/products.js";
 
 const { isAuthenticated } = useAuth()
 
@@ -99,9 +100,7 @@ const currentPage = ref(1)
 const lastPage = ref(1)
 
 const fetchProducts = async (page = 1) => {
-    const response = await api.get(
-        `/api/products?page=${page}`
-    )
+    const response = await ProductApi.getAll(page)
 
     products.value = response.data.data
     currentPage.value = response.data.meta.current_page
@@ -111,7 +110,7 @@ const fetchProducts = async (page = 1) => {
 const remove = async (id) => {
     if (!confirm('Delete product?')) return
 
-    await api.delete(`/api/products/${id}`)
+    await ProductApi.delete(id)
 
     fetchProducts(currentPage.value)
 }

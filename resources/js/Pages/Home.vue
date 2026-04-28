@@ -98,6 +98,7 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { Head, Link } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
+import {ProductApi} from "../api/products.js";
 
 const products = ref([])
 const categories = ref([])
@@ -113,15 +114,7 @@ const fetchCategories = async () => {
 }
 
 const fetchProducts = async (page = 1) => {
-    const params = new URLSearchParams()
-
-    params.append('page', page)
-
-    if (selectedCategory.value) {
-        params.append('category_id', selectedCategory.value)
-    }
-
-    const response = await axios.get(`/api/products?${params.toString()}`)
+    const response = await ProductApi.getAll(page, selectedCategory.value)
 
     products.value = response.data.data
 

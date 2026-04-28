@@ -34,6 +34,7 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { Head, Link } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
+import {ProductApi} from "../api/products.js";
 
 const props = defineProps({
     productId: Number,
@@ -42,9 +43,7 @@ const props = defineProps({
 const product = ref(null)
 
 const fetchProduct = async () => {
-    const response = await axios.get(
-        `/api/products/${props.productId}`
-    )
+    const response = await ProductApi.getOne(props.productId)
 
     product.value = response.data.data
 }
