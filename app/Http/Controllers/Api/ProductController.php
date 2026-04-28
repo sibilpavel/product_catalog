@@ -9,16 +9,25 @@ use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductController extends Controller
 {
-    public function index(): ProductCollection
+    public function index(): AnonymousResourceCollection
     {
-        $products = Product::with('category')
-            ->latest()
-            ->paginate(10);
+        $query = Product::with('category')
+            ->latest();
 
-        return new ProductCollection($products);
+        if (request()->filled('category_id')) {
+            $query->where(
+                'category_id',
+                request()->category_id
+            );
+        }
+
+        $products = $query->paginate(10);
+
+        return ProductResource::collection($products);
     }
 
     public function show(Product $product): ProductResource
