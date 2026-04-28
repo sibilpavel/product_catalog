@@ -1,13 +1,13 @@
 <template>
     <AppLayout>
-        <Head title="Products" />
+        <Head title="Admin Products" />
 
         <h1 class="text-3xl font-bold mb-6">
-            Products
+            Manage Products
         </h1>
 
         <p>
-            Products list will be here
+            Admin products table will be here
         </p>
     </AppLayout>
 </template>

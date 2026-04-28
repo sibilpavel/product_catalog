@@ -1,13 +1,13 @@
 <template>
     <AppLayout>
-        <Head title="Products" />
+        <Head title="Login" />
 
         <h1 class="text-3xl font-bold mb-6">
-            Products
+            Admin Login
         </h1>
 
         <p>
-            Products list will be here
+            Login form will be here
         </p>
     </AppLayout>
 </template>
