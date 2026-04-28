@@ -67,7 +67,6 @@ const submit = async () => {
 
         router.visit('/admin/products')
     } catch (e) {
-        alert(12);
         error.value = 'Invalid email or password'
     }
 }
