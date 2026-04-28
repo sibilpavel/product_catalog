@@ -13,6 +13,8 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
+        'price',
+        'category_id',
     ];
 
     public function category(): BelongsTo
